@@ -130,16 +130,17 @@ sPosition readPotPositions() {
   }
 }
 
-//TODO time, rebuild
 /*moves all the servos from 0 to 100 and back, uses delayTime to determine how fast to go*/
-void sequentialMove(int wtime) {
+void sequentialMove(int delayTime) {
   for (byte cpos = 0; cpos <= 10; cpos += 10) { // goes from 0 degrees to 180 degrees
     sPosition tPos = {cpos, cpos, cpos, cpos, cpos, cpos};
     moveHand(tPos);
+    delay delayTime;
   }
   for (int cpos = 180; cpos >= 0; cpos -= 10) { // goes from 180 degrees to 0 degrees
     sPosition tPos = {cpos, cpos, cpos, cpos, cpos, cpos};
     moveHand(tPos);
+    delay delayTime;
   }
 }
 //TODO
