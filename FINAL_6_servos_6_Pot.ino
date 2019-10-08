@@ -18,6 +18,7 @@ struct servoData {
   byte prevReading;
   byte prevReading2;
 };
+
 /*Custom data structure, used to store a particular position for
   the hand.
   uses PERCENTAGES not Angles to define positions*/
@@ -132,15 +133,13 @@ sPosition readPotPositions() {
 //TODO time, rebuild
 /*moves all the servos from 0 to 100 and back, uses delayTime to determine how fast to go*/
 void sequentialMove(int wtime) {
-  for (int cpos = 0; cpos <= 180; cpos += 20) { // goes from 0 degrees to 180 degrees
-    String Scpos = String(cpos);
-    serialServoReport(Scpos);
-    allservosToPos(cpos, wtime);
+  for (byte cpos = 0; cpos <= 10; cpos += 10) { // goes from 0 degrees to 180 degrees
+    sPosition tPos = {cpos, cpos, cpos, cpos, cpos, cpos};
+    moveHand(tPos);
   }
-  for (int cpos = 180; cpos >= 0; cpos -= 20) { // goes from 180 degrees to 0 degrees
-    String Scpos = String(cpos);
-    serialServoReport(Scpos);
-    allservosToPos(cpos, wtime);
+  for (int cpos = 180; cpos >= 0; cpos -= 10) { // goes from 180 degrees to 0 degrees
+    sPosition tPos = {cpos, cpos, cpos, cpos, cpos, cpos};
+    moveHand(tPos);
   }
 }
 //TODO
