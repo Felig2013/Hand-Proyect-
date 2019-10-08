@@ -2,6 +2,10 @@
 /*This file contains the code that is used in the hand that
   that is up for display in the showroom @ Marshall.*/ 
 
+/*TODOS AND OTHER NOTES*/
+//swith to an pointer system for hand profiles
+
+
 /*Custom data structure to replace the default arduino servo
   library with a more bare-metal, more efficient deployment
   that is more light in with the EPROM and enhances longevity*/
@@ -64,6 +68,7 @@ const byte numServos = 6; // positive int 0-6, number of servos
   BETA FEATURE:
   determines whether to run obsenity filter */
 const bool filterObsenity = TRUE;
+
 
 /*array of the type servo data. Used to store all the profiles of each of the servos*/
 servoData handProfile[numServos] {
@@ -145,13 +150,21 @@ void sequentialMove(int delayTime) {
 }
 //TODO
 
+/*sets a servo to the given position*/
+void writeServo( byte pin, byte sPos ){
+  digitalWrite(handProfile[i].serPin,HIGH); 
+  delayMicroseconds(sPos*10+1000); // waits 1000-2000 uS while forming the PWM signal
+  digitalWrite(handProfile[i].serPin,LOW);
+}
+
 /*Moves hand to provided positon*/
-void moveHand(sPosition) {
-  for (byte i = 0; i <= numServos; i++) {
-    if (handProfile[i].enabled) {
-      setServo(handProfile[i], );
-    }
-  }
+void moveHand(sPosition fingerPos) {
+  writeServo(handProfile.pinkyF,  fingerPos[0]);
+  writeServo(handProfile.ringF,   fingerPos[1]);
+  writeServo(handProfile.middleF, fingerPos[2]);
+  writeServo(handProfile.indexF,  fingerPos[3]);
+  writeServo(handProfile.thumbF,  fingerPos[4]);
+  writeServo(handProfile.wrist,   fingerPos[5]);
 }
 
 
