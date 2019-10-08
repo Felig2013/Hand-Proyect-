@@ -135,17 +135,17 @@ sPosition readPotPositions() {
   }
 }
 
-/*moves all the servos from 0 to 100 and back, uses delayTime to determine how fast to go*/
-void sequentialMove(int delayTime) {
+/*moves all the servos from 0 to 100 and back, uses dTime to determine how fast to go(usualy delayTime)*/
+void sequentialMove(int dTime) {
   for (byte cpos = 0; cpos <= 10; cpos += 10) { // goes from 0 degrees to 180 degrees
     sPosition tPos = {cpos, cpos, cpos, cpos, cpos, cpos};
     moveHand(tPos);
-    delay delayTime;
+    delay dTime;
   }
   for (int cpos = 180; cpos >= 0; cpos -= 10) { // goes from 180 degrees to 0 degrees
     sPosition tPos = {cpos, cpos, cpos, cpos, cpos, cpos};
     moveHand(tPos);
-    delay delayTime;
+    delay dTime;
   }
 }
 
@@ -181,10 +181,10 @@ void setup() {
 
 
 void loop() {
-
   switch (mode) {
     //AnalogSet
     case 1:
+      moveHand(readPotPositions());
       break;
 
     //Sequential Move
