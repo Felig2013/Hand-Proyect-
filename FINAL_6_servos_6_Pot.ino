@@ -67,9 +67,9 @@ sleep state starts*/
 const unsigned int INACTIVESTATESBEFORESLEEP = 5;
 
 /*threshoold before sleep state starts */
-byte RATEOFCHANGETRESHOLD = 20;
+const byte RATEOFCHANGETRESHOLD = 20;
 
-bool DEBUG_RATE_OF_CHANGE = true;
+const bool DEBUG_RATE_OF_CHANGE = true;
 
 //determines whether or not to print debug data to the terminal.
 const bool printPotVals = true;   //prints input data from each potenciometer
@@ -195,19 +195,15 @@ void moveHand(sPosition fingerPos) {
   writeServo(handProfile.wrist,   fingerPos[5]);
 }
 
+
 void setup() {
   if (printSerVals || printPotVals) {
     Serial.begin(9600);
     Serial.println("serial ready");
   }
-  if (printSettings) {
-
-  }
   servosAttach();
-  delay(3000);
+  delay(1000);
 }
-
-
 
 void loop() {
   switch (mode) {
