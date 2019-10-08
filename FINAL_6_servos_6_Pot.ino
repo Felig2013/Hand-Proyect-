@@ -53,8 +53,11 @@ struct sPosition {
     do nothing
   mode 6: 
     sequential move
+  mode 7: 
+    sleep mode
+  
 */
-const byte mode = 6;
+byte mode = 6;
 
 /*max rate of change registered over the last INACTIVESTATESBEFORESLEEP states.*/
 byte maxRateOfChange; 
@@ -240,7 +243,23 @@ void loop() {
     case 6:
       sequentialMove(delayTime);
       break;
-
+    case 7:
+      sPosition tPos = readPotPositions();
+      if(filterObsenity){
+        //obsenity check 
+      }
+      moveHand(tPos);
+      while (true){
+        readPotPositions() //also updates rate of change
+        if(maxRateOfChange>RATEOFCHANGETRESHOLD){
+          mode = 1;
+          if(DEBUG_RATE_OF_CHANGE){
+            Serial.println("out of sleep; rChange = "+String(maxRateOfChange))
+          }
+          break;
+        }
+      }
+      break;
     default:
       Serial.println("Wrong mode");
       delay(500);
