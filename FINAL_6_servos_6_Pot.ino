@@ -4,6 +4,7 @@
 
 /*TODOS AND OTHER NOTES*/
 //swith to an pointer system for hand profiles
+//add move by serial functionality
 
 
 /*Custom data structure to replace the default arduino servo
@@ -45,6 +46,8 @@ struct sPosition {
     move by serial (NOT READY)
   mode 4: 
     move all to constPos (move all servos to constPos and leave them there)
+  mode 5:
+    do nothing
   mode 6: 
     sequential move
 */
@@ -192,26 +195,26 @@ void loop() {
       sequentialMove(delayTime);
       break;
 
-    //
+    // move by serial
     case 3:
+      //-------------------------------------TODO----------move by serial
       break;
 
     // move all to constPos
     case 4:
-      String Scpos = String(constPos);
-      serialServoReport(Scpos);
-      allservosToPos(constPos, delayTime);
+    sPosition tPos = {constPos, constPos, 
+    constPos, constPos, constPos, constPos}
+      moveHand(tPos);
       break;
 
     //
     case 5:
+      //do nothing
       break;
 
     //
     case 6:
-      Serial.println("in loop sequential start");
       sequentialMove(delayTime);
-      Serial.println("in loop sequential");
       break;
 
     default:
