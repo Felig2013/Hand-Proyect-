@@ -61,7 +61,7 @@ const unsigned int delayTime = 150;
 // constant position
 const byte constPos = 50; //int between 0 and 100
 
-// numeber of servos being used -> prbly 6 lol
+// number of servos being used -> prbly 6 lol
 const byte numServos = 6; // positive int 0-6, number of servos
 
 /*
