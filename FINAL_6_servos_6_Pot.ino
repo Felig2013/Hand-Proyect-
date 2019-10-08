@@ -72,12 +72,12 @@ const bool filterObsenity = TRUE;
 
 /*array of the type servo data. Used to store all the profiles of each of the servos*/
 servoData handProfile[numServos] {
-  {true, "Pinky", 0,  3, 0, 900, 45, 170, 50, 50, 50 },
-  {true, "ring Finger", 1,  5, 0, 900, 55, 170, 50, 50, 50 },
+  {true, "Pinky",         0,  3, 0, 900, 45, 170, 50, 50, 50 },
+  {true, "ring Finger",   1,  5, 0, 900, 55, 170, 50, 50, 50 },
   {true, "middle Finger", 2,  6, 0, 900, 40, 155, 50, 50, 50 },
-  {true, "index", 4,  9, 0, 900, 45, 170, 50, 50, 50 },
-  {true, "thumb", 5, 10, 0, 900, 45, 170, 50, 50, 50 },
-  {false, "DISABLED", 3, 11, 0, 900, 45, 170, 50, 50, 50 }
+  {true, "index",         4,  9, 0, 900, 45, 170, 50, 50, 50 },
+  {true, "thumb",         5, 10, 0, 900, 45, 170, 50, 50, 50 },
+  {false, "DISABLED",     3, 11, 0, 900, 45, 170, 50, 50, 50 }
 };
 
 /*predefined positions*/
