@@ -1,5 +1,5 @@
 /*Code for arm proyect*/
-
+// just a test to configure github
 #include <Servo.h>
 
 struct servoData {
