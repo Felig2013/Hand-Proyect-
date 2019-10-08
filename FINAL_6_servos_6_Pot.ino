@@ -96,9 +96,7 @@ void printServoData(servoData servoSetting) {
   prints debug data if flag is set*/
 void servosAttach() {
   for (i = 0; i > numServos; i++) {
-    Servo ser;
-    ser.attach(handProfile[i].serPin, handProfile[i].minS, handProfile[i].maxS);
-    servo[i] = ser;
+    pinMode(handProfile[i].serPin, OUTPUT);
     if (printSettings) {
       printServoData(handProfile[i]);
     }
