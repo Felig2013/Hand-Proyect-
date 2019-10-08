@@ -5,6 +5,9 @@
 /*TODOS AND OTHER NOTES*/
 //swith to an pointer system for hand profiles
 //add move by serial functionality
+//somehow relate thresholds with cycles required for sleep
+//Label constants as such 
+// change constants to mayus to use standar notation. 
 
 
 /*Custom data structure to replace the default arduino servo
@@ -52,6 +55,18 @@ struct sPosition {
     sequential move
 */
 const byte mode = 6;
+
+/*max rate of change registered over the last INACTIVESTATESBEFORESLEEP states.*/
+byte maxRateOfChange; 
+
+/*determines for how long the rate of change must stay under the threshoold before 
+sleep state starts*/
+const unsigned int INACTIVESTATESBEFORESLEEP = 5;
+
+/*threshoold before sleep state starts */
+byte RATEOFCHANGETRESHOLD = 20;
+
+bool DEBUG_RATE_OF_CHANGE = true;
 
 //determines whether or not to print debug data to the terminal.
 const bool printPotVals = true;   //prints input data from each potenciometer
@@ -119,7 +134,15 @@ void readPot(&servoData Sser) {
     } else if (potVal > Sser.maxP) {
       potVal = Sser.maxS;
     } //constraints values 
-    //shuffles arround averages in memory 
+    //shuffles arround averages in memory
+    //calculates change over time since last measure. 
+    byte cRateOfChange = abs(potval-Sser.prevReading) 
+    if(maxRateOfChange<cRateOfChange){
+      maxRateOfChange = cRateOfChange;
+      if(DEBUG_RATE_OF_CHANGE){
+        Serial.println("max rChange = "+String(maxRateOfChange));
+      }
+    } 
     Sser.prevReading2 = Sser.prevReading;
     Sser.prevReading = Sser.potReading;
     Sser.potReading = (potVal + ser.prevReading + Sser.prevReading2) / 3
@@ -188,6 +211,7 @@ void loop() {
     //AnalogSet
     case 1:
       moveHand(readPotPositions());
+
       break;
 
     //Sequential Move
