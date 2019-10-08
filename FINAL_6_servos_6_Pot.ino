@@ -103,7 +103,6 @@ void servosAttach() {
   }
 }
 
-
 /*Reads and averages reading for provided servoData profile*/ 
 void readPot(&servoData Sser) {
   if (Sser.enabled) {
@@ -150,8 +149,6 @@ void sequentialMove(int delayTime) {
   }
 }
 
-
-
 /*sets a servo to the given position*/
 void writeServo( byte pin, byte sPos ){
   digitalWrite(handProfile[i].serPin,HIGH); 
@@ -168,26 +165,6 @@ void moveHand(sPosition fingerPos) {
   writeServo(handProfile.thumbF,  fingerPos[4]);
   writeServo(handProfile.wrist,   fingerPos[5]);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void setup() {
   if (printSerVals || printPotVals) {
@@ -243,17 +220,3 @@ void loop() {
       break;
   }
 }
-
-
-
-// Maps a potentiomenter according to the
-// int mapSer(servoData Sser){
-//   int potVal = analogRead(Sser.potPin);
-//   int serVal = map(potVal, Sser.minP, Sser.maxP, Sser.minS, Sser.maxS);
-
-// ser1.attach(3);
-//   ser2.attach(5);
-//   ser3.attach(6);
-//   ser4.attach(9);
-//   ser5.attach(10);
-//   ser6.attach(11);
