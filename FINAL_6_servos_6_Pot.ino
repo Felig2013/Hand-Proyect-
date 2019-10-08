@@ -105,19 +105,21 @@ void servosAttach() {
   }
 }
 
-//TODO
+
 /*Reads and averages reading for provided servoData profile*/ 
 void readPot(&servoData Sser) {
   if (Sser.enabled) {
-    byte potVal = map(analogRead(Sser.potPin), Sser.minP, Sser.maxP, 0, 100);
+    byte potVal = analogRead(Sser.potPin); //reads value from pot
+    if (printPotVals) { //prints debug data if needed
+      Serial.print(Sser.fName+" p:" + String(potVal) + " ");
+    }
+    potVal = map(potVal, Sser.minP, Sser.maxP, 0, 100);//ma[s pot value
     if (potVal < Sser.minP) {
       potVal = Sser.minS;
     } else if (potVal > Sser.maxP) {
       potVal = Sser.maxS;
-    }
-    if (printPotVals) {
-      Serial.print("p:" + String(potVal) + " ");
-    }
+    } //constraints values 
+    //shuffles arround averages in memory 
     Sser.prevReading2 = Sser.prevReading;
     Sser.prevReading = Sser.potReading;
     Sser.potReading = (potVal + ser.prevReading + Sser.prevReading2) / 3
