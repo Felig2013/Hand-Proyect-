@@ -123,15 +123,16 @@ void readPot(&servoData Sser) {
     Sser.potReading = (potVal + ser.prevReading + Sser.prevReading2) / 3
   }
 }
-//TODO
+
 /*reads values from potentiomentes, and returns a position value*/
 sPosition readPotPositions() {
   return sPosition inputPosition{
-    readPot(Ser1),
-    readPot(Ser2),
-    readPot(Ser3),
-    readPot(Ser4),
-    readPot(Ser5)
+    readPot(handProfile[0]),
+    readPot(handProfile[1]),
+    readPot(handProfile[2]),
+    readPot(handProfile[3]),
+    readPot(handProfile[4]),
+    readPot(handProfile[5])
   }
 }
 
@@ -148,7 +149,8 @@ void sequentialMove(int delayTime) {
     delay delayTime;
   }
 }
-//TODO
+
+
 
 /*sets a servo to the given position*/
 void writeServo( byte pin, byte sPos ){
