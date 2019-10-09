@@ -1,0 +1,6 @@
+{
+    "sketch": "Hand-Proyect-.ino",
+    "port": "/dev/cu.AdafruitEZ-Link16c6-SPP",
+    "board": "arduino:avr:uno",
+    "programmer": "AVRISP mkII"
+}
