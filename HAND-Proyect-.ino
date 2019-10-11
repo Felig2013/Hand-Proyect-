@@ -125,7 +125,7 @@ void servosAttach() {
 }
 
 /*Reads and averages reading for provided servoData profile*/ 
-byte readPot(servoData Sser) {
+byte readPotVal(servoData Sser) {
   if (Sser.enabled) {
     byte potVal = analogRead(Sser.potPin); //reads value from pot
     if (printPotVals) { //prints debug data if needed
@@ -151,18 +151,18 @@ byte readPot(servoData Sser) {
     Sser.potReading = (potVal + Sser.prevReading + Sser.prevReading2) / 3;
     
   }
-  return Sser.potreading;
+  return Sser.potReading;
 }
 
 /*reads values from potentiomentes, and returns a position value*/
-sPosition readPotPositions() {
+sPosition readPotValPositions() {
   sPosition inputPosition{
-    readPot(handProfile[0]),
-    readPot(handProfile[1]),
-    readPot(handProfile[2]),
-    readPot(handProfile[3]),
-    readPot(handProfile[4]),
-    readPot(handProfile[5])
+    readPotVal(handProfile[0]),
+    readPotVal(handProfile[1]),
+    readPotVal(handProfile[2]),
+    readPotVal(handProfile[3]),
+    readPotVal(handProfile[4]),
+    readPotVal(handProfile[5])
   };
   Serial.println();
   return inputPosition;
@@ -211,7 +211,7 @@ void loop() {
   switch (mode) {
     //AnalogSet
     case 1:
-      moveHand(readPotPositions());
+      moveHand(readPotValPositions());
 
       break;
 
@@ -242,13 +242,13 @@ void loop() {
       sequentialMove(delayTime);
       break;
     case 7:
-      sPosition tPos = readPotPositions();
+      sPosition tPos = readPotValPositions();
       if(filterObsenity){
         //obsenity check 
       }
       moveHand(tPos);
       while (true){
-        readPotPositions() //also updates rate of change
+        byte nonesense = readPotValPositions() //also updates rate of change
         if(maxRateOfChange>RATEOFCHANGETRESHOLD){
           mode = 1;
           if(DEBUG_RATE_OF_CHANGE){
