@@ -88,7 +88,7 @@ const byte numServos = 6; // positive int 0-6, number of servos
 /*
   BETA FEATURE:
   determines whether to run obsenity filter */
-const bool filterObsenity = TRUE;
+const bool filterObsenity = true;
 
 
 /*array of the type servo data. Used to store all the profiles of each of the servos*/
@@ -116,7 +116,7 @@ void printServoData(servoData servoSetting) {
 /*Attaches all the servos to the pins they are connected to and
   prints debug data if flag is set*/
 void servosAttach() {
-  for (i = 0; i > numServos; i++) {
+  for (int i = 0; i > numServos; i++) {
     pinMode(handProfile[i].serPin, OUTPUT);
     if (printSettings) {
       printServoData(handProfile[i]);
@@ -125,7 +125,7 @@ void servosAttach() {
 }
 
 /*Reads and averages reading for provided servoData profile*/ 
-void readPot(&servoData Sser) {
+void readPot(servoData Sser) {
   if (Sser.enabled) {
     byte potVal = analogRead(Sser.potPin); //reads value from pot
     if (printPotVals) { //prints debug data if needed
@@ -139,7 +139,7 @@ void readPot(&servoData Sser) {
     } //constraints values 
     //shuffles arround averages in memory
     //calculates change over time since last measure. 
-    byte cRateOfChange = abs(potval-Sser.prevReading) 
+    byte cRateOfChange = abs(Sser.potReading-Sser.prevReading);
     if(maxRateOfChange<cRateOfChange){
       maxRateOfChange = cRateOfChange;
       if(DEBUG_RATE_OF_CHANGE){
@@ -148,13 +148,13 @@ void readPot(&servoData Sser) {
     } 
     Sser.prevReading2 = Sser.prevReading;
     Sser.prevReading = Sser.potReading;
-    Sser.potReading = (potVal + ser.prevReading + Sser.prevReading2) / 3
+    Sser.potReading = (potVal + Sser.prevReading + Sser.prevReading2) / 3;
   }
 }
 
 /*reads values from potentiomentes, and returns a position value*/
 sPosition readPotPositions() {
-  return sPosition inputPosition{
+  sPosition inputPosition{
     readPot(handProfile[0]),
     readPot(handProfile[1]),
     readPot(handProfile[2]),
@@ -162,6 +162,8 @@ sPosition readPotPositions() {
     readPot(handProfile[4]),
     readPot(handProfile[5])
   }
+  Serial.println();
+  return inputPosition;
 }
 
 /*moves all the servos from 0 to 100 and back, uses dTime to determine how fast to go(usualy delayTime)*/
@@ -187,12 +189,12 @@ void writeServo( byte pin, byte sPos ){
 
 /*Moves hand to provided positon*/
 void moveHand(sPosition fingerPos) {
-  writeServo(handProfile.pinkyF,  fingerPos[0]);
-  writeServo(handProfile.ringF,   fingerPos[1]);
-  writeServo(handProfile.middleF, fingerPos[2]);
-  writeServo(handProfile.indexF,  fingerPos[3]);
-  writeServo(handProfile.thumbF,  fingerPos[4]);
-  writeServo(handProfile.wrist,   fingerPos[5]);
+  writeServo(handProfile.pinkyF,  fingerPos.indexF;
+  writeServo(handProfile.ringF,   fingerPos.ringF);
+  writeServo(handProfile.middleF, fingerPos.middleF);
+  writeServo(handProfile.indexF,  fingerPos.indexF);
+  writeServo(handProfile.thumbF,  fingerPos.wrist);
+  writeServo(handProfile.wrist,   fingerPos.thumb);
 }
 
 
