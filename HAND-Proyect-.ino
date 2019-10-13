@@ -188,6 +188,8 @@ void writeServo( byte sPos, byte pin ){
   delayMicroseconds(sPos*10+1000); // waits 1000-2000 uS while forming the PWM signal
   digitalWrite(pin,LOW);
 }
+
+/*Moves the hand to the desired sPosition*/
 void moveHand(sPosition fingerPos){
 writeServo(fingerPos.pinkyF,  handProfile[0].potPin);
 writeServo(fingerPos.ringF,   handProfile[1].potPin);
@@ -199,7 +201,7 @@ writeServo(fingerPos.wrist,   handProfile[5].potPin);
 
 
 void setup() {
-  if (printSerVals || printPotVals) {
+  if (printSerVals || printPotVals || printSettings) { //if things need to get
     Serial.begin(9600);
     Serial.println("serial ready");
   }
