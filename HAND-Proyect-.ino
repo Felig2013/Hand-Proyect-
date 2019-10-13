@@ -183,18 +183,18 @@ void sequentialMove(int dTime) {
 }
 
 /*sets a servo to the given position*/
-void writeServo( byte pin, byte sPos ){
+void writeServo( byte sPos, byte pin ){
   digitalWrite(pin,HIGH); 
   delayMicroseconds(sPos*10+1000); // waits 1000-2000 uS while forming the PWM signal
   digitalWrite(pin,LOW);
 }
 void moveHand(sPosition fingerPos){
-writeServo(fingerPos.pinkyF, fingerPos[0]);
-writeServo(fingerPos.ringF,fingerPos[1]);
-writeServo(fingerPos.middleF,fingerPos[2]);
-writeServo(fingerPos.indexF,fingerPos[3]);
-writeServo(fingerPos.thumbF, fingerPos[4]);
-writeServo(fingerPos.wrist,fingerPos[5]);
+writeServo(fingerPos.pinkyF,  handProfile[0].potPin);
+writeServo(fingerPos.ringF,   handProfile[1].potPin);
+writeServo(fingerPos.middleF, handProfile[2].potPin);
+writeServo(fingerPos.indexF,  handProfile[3].potPin);
+writeServo(fingerPos.thumbF,  handProfile[4].potPin);
+writeServo(fingerPos.wrist,   handProfile[5].potPin);
 }
 
 
@@ -208,6 +208,7 @@ void setup() {
 }
 
 void loop() {
+  sPosition tPos;
   switch (mode) {
     //AnalogSet
     case 1:
@@ -227,8 +228,8 @@ void loop() {
 
     // move all to constPos
     case 4:
-    sPosition tPos = {constPos, constPos, 
-    constPos, constPos, constPos, constPos}
+    tPos = {constPos, constPos, 
+    constPos, constPos, constPos, constPos};
       moveHand(tPos);
       break;
 
@@ -242,17 +243,17 @@ void loop() {
       sequentialMove(delayTime);
       break;
     case 7:
-      sPosition tPos = readPotValPositions();
+      tPos = readPotValPositions();
       if(filterObsenity){
         //obsenity check 
       }
       moveHand(tPos);
       while (true){
-        byte nonesense = readPotValPositions() //also updates rate of change
+        readPotValPositions(); //also updates rate of change
         if(maxRateOfChange>RATEOFCHANGETRESHOLD){
           mode = 1;
           if(DEBUG_RATE_OF_CHANGE){
-            Serial.println("out of sleep; rChange = "+String(maxRateOfChange))
+            Serial.println("out of sleep; rChange = "+String(maxRateOfChange));
           }
           break;
         }
