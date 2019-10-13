@@ -131,13 +131,12 @@ byte readPotVal(servoData Sser) {
     if (printPotVals) { //prints debug data if needed
       Serial.print(Sser.fName+" p:" + String(potVal) + " ");
     }
-    potVal = map(potVal, Sser.minP, Sser.maxP, 0, 100);//ma[s pot value
-    if (potVal < Sser.minP) {
+    potVal = map(potVal, Sser.minP, Sser.maxP, 0, 100);//map pot value
+    if (potVal < Sser.minS) {//constraints values 
       potVal = Sser.minS;
-    } else if (potVal > Sser.maxP) {
+    } else if (potVal > Sser.maxS) {
       potVal = Sser.maxS;
-    } //constraints values +-
-    //shuffles arround averages in memory
+    }
     //calculates change over time since last measure. 
     byte cRateOfChange = abs(Sser.potReading-Sser.prevReading);
     if(maxRateOfChange<cRateOfChange){
@@ -146,10 +145,10 @@ byte readPotVal(servoData Sser) {
         Serial.println("max rChange = "+String(maxRateOfChange));
       }
     } 
+    //shuffles arround averages in memory
     Sser.prevReading2 = Sser.prevReading;
     Sser.prevReading = Sser.potReading;
     Sser.potReading = (potVal + Sser.prevReading + Sser.prevReading2) / 3;
-    
   }
   return Sser.potReading;
 }
