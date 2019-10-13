@@ -57,7 +57,7 @@ struct sPosition {
     sleep mode
   
 */
-byte mode = 6;
+char mode = 1;
 
 /*max rate of change registered over the last INACTIVESTATESBEFORESLEEP states.*/
 byte maxRateOfChange; 
@@ -211,38 +211,38 @@ void loop() {
   sPosition tPos;
   switch (mode) {
     //AnalogSet
-    case 1:
+    case '1':
       moveHand(readPotValPositions());
 
       break;
 
     //Sequential Move
-    case 2:
+    case '2':
       sequentialMove(delayTime);
       break;
 
     // move by serial
-    case 3:
+    case '3':
       //-------------------------------------TODO----------move by serial
       break;
 
     // move all to constPos
-    case 4:
+    case '4':
     tPos = {constPos, constPos, 
     constPos, constPos, constPos, constPos};
       moveHand(tPos);
       break;
 
     //
-    case 5:
+    case '5':
       //do nothing
       break;
 
     //
-    case 6:
+    case '6':
       sequentialMove(delayTime);
       break;
-    case 7:
+    case '7':
       tPos = readPotValPositions();
       if(filterObsenity){
         //obsenity check 
