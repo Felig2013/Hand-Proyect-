@@ -190,12 +190,12 @@ void writeServo( byte sPos, byte pin ){
 
 /*Moves the hand to the desired sPosition*/
 void moveHand(sPosition fingerPos){
-writeServo(fingerPos.pinkyF,  handProfile[0].potPin);
-writeServo(fingerPos.ringF,   handProfile[1].potPin);
-writeServo(fingerPos.middleF, handProfile[2].potPin);
-writeServo(fingerPos.indexF,  handProfile[3].potPin);
-writeServo(fingerPos.thumbF,  handProfile[4].potPin);
-writeServo(fingerPos.wrist,   handProfile[5].potPin);
+writeServo(fingerPos.pinkyF,  handProfile[0].serPin);
+writeServo(fingerPos.ringF,   handProfile[1].serPin);
+writeServo(fingerPos.middleF, handProfile[2].serPin);
+writeServo(fingerPos.indexF,  handProfile[3].serPin);
+writeServo(fingerPos.thumbF,  handProfile[4].serPin);
+writeServo(fingerPos.wrist,   handProfile[5].serPin);
 }
 
 
