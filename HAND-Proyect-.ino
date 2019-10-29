@@ -18,8 +18,8 @@ struct servoData {
   String fName;
   byte potPin;
   byte serPin;
-  byte minP;
-  byte maxP;
+  int minP;
+  int maxP;
   byte minS;
   byte maxS;
   byte potReading;
@@ -57,7 +57,7 @@ struct sPosition {
     sleep mode
   
 */
-char mode = 1;
+char mode = '1';
 
 /*max rate of change registered over the last INACTIVESTATESBEFORESLEEP states.*/
 byte maxRateOfChange; 
@@ -72,12 +72,12 @@ const byte RATEOFCHANGETRESHOLD = 20;
 const bool DEBUG_RATE_OF_CHANGE = true;
 
 //determines whether or not to print debug data to the terminal.
-const bool printPotVals = true;   //prints input data from each potenciometer
-const bool printSerVals = true;   //prints output data to each servo
-const bool printSettings = true;  //prints current servo settings when booting up.
+const bool printPotVals = 0;   //prints input data from each potenciometer
+const bool printSerVals = 0;   //prints output data to each servo
+const bool printSettings = 0;  //prints current servo settings when booting up.
 
 //time delay used for most everything
-const unsigned int delayTime = 150;
+const unsigned int delayTime = 500;
 
 // constant position
 const byte constPos = 50; //int between 0 and 100
@@ -93,12 +93,12 @@ const bool filterObsenity = true;
 
 /*array of the type servo data. Used to store all the profiles of each of the servos*/
 servoData handProfile[numServos] {
-  {true, "Pinky",         0,  3, 0, 900, 45, 170, 50, 50, 50 },
-  {true, "ring Finger",   1,  5, 0, 900, 55, 170, 50, 50, 50 },
-  {true, "middle Finger", 2,  6, 0, 900, 40, 155, 50, 50, 50 },
-  {true, "index",         4,  9, 0, 900, 45, 170, 50, 50, 50 },
-  {true, "thumb",         5, 10, 0, 900, 45, 170, 50, 50, 50 },
-  {false, "DISABLED",     3, 11, 0, 900, 45, 170, 50, 50, 50 }
+  {1, "Pinky",          0,  3, 0, 900, 10, 90, 50, 50, 50 },
+  {1, "ring Finger",   1,  5, 0, 900, 10, 90, 50, 50, 50 },
+  {1, "middle Finger", 2,  6, 0, 900, 10, 90, 50, 50, 50 },
+  {1, "index",         4,  9, 0, 900, 10, 90, 50, 50, 50 },
+  {1, "thumb",         5, 10, 0, 900, 10, 90, 50, 50, 50 },
+  {0, "DISABLED",      3, 11, 0, 900, 10, 90, 50, 50, 50 }
 };
 
 /*predefined positions*/
@@ -125,17 +125,23 @@ void servosAttach() {
 }
 
 /*Reads and averages reading for provided servoData profile*/ 
-byte readPotVal(servoData Sser) {
+byte readPotVal(servoData &Sser) {
   if (Sser.enabled) {
-    byte potVal = analogRead(Sser.potPin); //reads value from pot
+    int potVal = analogRead(Sser.potPin); //reads value from pot
     if (printPotVals) { //prints debug data if needed
       Serial.print(Sser.fName+" p:" + String(potVal) + " ");
     }
     potVal = map(potVal, Sser.minP, Sser.maxP, 0, 100);//map pot value
+    if (printPotVals) { //prints debug data if needed
+      Serial.print("pM:" + String(potVal) + " ");
+    }
     if (potVal < Sser.minS) {//constraints values 
       potVal = Sser.minS;
     } else if (potVal > Sser.maxS) {
       potVal = Sser.maxS;
+    }
+    if (printPotVals) { //prints debug data if needed
+      Serial.print("pC:" + String(potVal) + " ");
     }
     //calculates change over time since last measure. 
     byte cRateOfChange = abs(Sser.potReading-Sser.prevReading);
@@ -149,6 +155,10 @@ byte readPotVal(servoData Sser) {
     Sser.prevReading2 = Sser.prevReading;
     Sser.prevReading = Sser.potReading;
     Sser.potReading = (potVal + Sser.prevReading + Sser.prevReading2) / 3;
+   
+    if (printPotVals) { //prints debug data if needed
+      //Serial.print("pO:" + String(Sser.potReading) + " "+"p(" + String(Sser.potReading) + " " + String(Sser.prevReading)+ " " + String(Sser.prevReading2) +") ");
+    }
   }
   return Sser.potReading;
 }
