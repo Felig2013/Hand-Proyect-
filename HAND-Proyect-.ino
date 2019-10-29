@@ -72,6 +72,7 @@ const byte RATEOFCHANGETRESHOLD = 20;
 const bool DEBUG_RATE_OF_CHANGE = true;
 
 //determines whether or not to print debug data to the terminal.
+const bool printPotMapping = 0;
 const bool printPotVals = 0;   //prints input data from each potenciometer
 const bool printSerVals = 0;   //prints output data to each servo
 const bool printSettings = 0;  //prints current servo settings when booting up.
@@ -132,7 +133,7 @@ byte readPotVal(servoData &Sser) {
       Serial.print(Sser.fName+" p:" + String(potVal) + " ");
     }
     potVal = map(potVal, Sser.minP, Sser.maxP, 0, 100);//map pot value
-    if (printPotVals) { //prints debug data if needed
+    if (pprintPotMapping) { //prints debug data if needed
       Serial.print("pM:" + String(potVal) + " ");
     }
     if (potVal < Sser.minS) {//constraints values 
@@ -140,7 +141,7 @@ byte readPotVal(servoData &Sser) {
     } else if (potVal > Sser.maxS) {
       potVal = Sser.maxS;
     }
-    if (printPotVals) { //prints debug data if needed
+    if (printPotMapping) { //prints debug data if needed
       Serial.print("pC:" + String(potVal) + " ");
     }
     //calculates change over time since last measure. 
@@ -156,8 +157,8 @@ byte readPotVal(servoData &Sser) {
     Sser.prevReading = Sser.potReading;
     Sser.potReading = (potVal + Sser.prevReading + Sser.prevReading2) / 3;
    
-    if (printPotVals) { //prints debug data if needed
-      //Serial.print("pO:" + String(Sser.potReading) + " "+"p(" + String(Sser.potReading) + " " + String(Sser.prevReading)+ " " + String(Sser.prevReading2) +") ");
+    if (printPotMapping) { //prints debug data if needed
+      Serial.print("pO:" + String(Sser.potReading) + " "+"p(" + String(Sser.potReading) + " " + String(Sser.prevReading)+ " " + String(Sser.prevReading2) +") ");
     }
   }
   return Sser.potReading;
@@ -193,6 +194,9 @@ void sequentialMove(int dTime) {
 
 /*sets a servo to the given position*/
 void writeServo( byte sPos, byte pin ){
+  if (printSerVals) { //prints debug data if needed
+      Serial.print("pC:" + String(potVal) + " ");
+  }
   digitalWrite(pin,HIGH); 
   delayMicroseconds(sPos*10+1000); // waits 1000-2000 uS while forming the PWM signal
   digitalWrite(pin,LOW);
