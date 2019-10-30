@@ -20,8 +20,8 @@ struct servoData {
   byte serPin;
   int minP;
   int maxP;
-  byte minS;
-  byte maxS;
+  int minS;
+  int maxS;
   byte potReading;
   byte prevReading;
   byte prevReading2;
@@ -73,9 +73,9 @@ const bool DEBUG_RATE_OF_CHANGE = true;
 
 //determines whether or not to print debug data to the terminal.
 const bool printPotMapping = 0;
-const bool printPotVals = 0;   //prints input data from each potenciometer
-const bool printSerVals = 0;   //prints output data to each servo
-const bool printSettings = 0;  //prints current servo settings when booting up.
+const bool printPotVals    = 0;   //prints input data from each potenciometer
+const bool printSerVals    = 1;   //prints output data to each servo
+const bool printSettings   = 0;   //prints current servo settings when booting up.
 
 //time delay used for most everything
 const unsigned int delayTime = 500;
@@ -133,7 +133,7 @@ byte readPotVal(servoData &Sser) {
       Serial.print(Sser.fName+" p:" + String(potVal) + " ");
     }
     potVal = map(potVal, Sser.minP, Sser.maxP, 0, 100);//map pot value
-    if (pprintPotMapping) { //prints debug data if needed
+    if (printPotMapping) { //prints debug data if needed
       Serial.print("pM:" + String(potVal) + " ");
     }
     if (potVal < Sser.minS) {//constraints values 
@@ -193,23 +193,25 @@ void sequentialMove(int dTime) {
 }
 
 /*sets a servo to the given position*/
-void writeServo( byte sPos, byte pin ){
+void writeServo( byte sPos, servoData S){
   if (printSerVals) { //prints debug data if needed
-      Serial.print("pC:" + String(potVal) + " ");
+      Serial.print("S:" + String(sPos) + " ");
   }
-  digitalWrite(pin,HIGH); 
-  delayMicroseconds(sPos*10+1000); // waits 1000-2000 uS while forming the PWM signal
-  digitalWrite(pin,LOW);
+  int dTime = map(handProfile[0].)+1000
+  digitalWrite(S.serPin,HIGH); 
+  delayMicroseconds(dtime); // waits 1000-2000 uS while forming the PWM signal
+  digitalWrite(S.serPin,LOW);
 }
 
 /*Moves the hand to the desired sPosition*/
 void moveHand(sPosition fingerPos){
-writeServo(fingerPos.pinkyF,  handProfile[0].serPin);
+writeServo(fingerPos.pinkyF,  handProfile[0]);
 writeServo(fingerPos.ringF,   handProfile[1].serPin);
 writeServo(fingerPos.middleF, handProfile[2].serPin);
 writeServo(fingerPos.indexF,  handProfile[3].serPin);
 writeServo(fingerPos.thumbF,  handProfile[4].serPin);
 writeServo(fingerPos.wrist,   handProfile[5].serPin);
+Serial.println();
 }
 
 
