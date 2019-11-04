@@ -197,20 +197,20 @@ void writeServo( byte sPos, servoData S){
   if (printSerVals) { //prints debug data if needed
       Serial.print("S:" + String(sPos) + " ");
   }
-  int dTime = map(handProfile[0].)+1000
+  int dTime = map(sPos, 0, 100, S.minS, S.maxS )+1000;
   digitalWrite(S.serPin,HIGH); 
-  delayMicroseconds(dtime); // waits 1000-2000 uS while forming the PWM signal
+  delayMicroseconds(dTime); // waits 1000-2000 uS while forming the PWM signal
   digitalWrite(S.serPin,LOW);
 }
 
 /*Moves the hand to the desired sPosition*/
 void moveHand(sPosition fingerPos){
 writeServo(fingerPos.pinkyF,  handProfile[0]);
-writeServo(fingerPos.ringF,   handProfile[1].serPin);
-writeServo(fingerPos.middleF, handProfile[2].serPin);
-writeServo(fingerPos.indexF,  handProfile[3].serPin);
-writeServo(fingerPos.thumbF,  handProfile[4].serPin);
-writeServo(fingerPos.wrist,   handProfile[5].serPin);
+writeServo(fingerPos.ringF,   handProfile[1]);
+writeServo(fingerPos.middleF, handProfile[2]);
+writeServo(fingerPos.indexF,  handProfile[3]);
+writeServo(fingerPos.thumbF,  handProfile[4]);
+writeServo(fingerPos.wrist,   handProfile[5]);
 Serial.println();
 }
 
