@@ -8,9 +8,24 @@
 //somehow relate thresholds with cycles required for sleep
 //Label constants as such 
 // change constants to mayus to use standar notation. 
-// i like github
-#include "header.h"
 
+
+/*Custom data structure to replace the default arduino servo
+  library with a more bare-metal, more efficient deployment
+  that is more light in with the EPROM and enhances longevity*/
+struct servoData {
+  bool enabled;
+  String fName;
+  byte potPin;
+  byte serPin;
+  int minP;
+  int maxP;
+  int minS;
+  int maxS;
+  byte potReading;
+  byte prevReading;
+  byte prevReading2;
+};
 
 /*Custom data structure, used to store a particular position for
   the hand.
@@ -40,9 +55,13 @@ struct sPosition {
     sequential move
   mode 7: 
     sleep mode
+  mode 8: 
+    serial report servo 
+  mode 9: 
+    serial report servo 
   
 */
-char mode = '1';
+char mode = '8';
 
 /*max rate of change registered over the last INACTIVESTATESBEFORESLEEP states.*/
 byte maxRateOfChange; 
@@ -57,13 +76,13 @@ const byte RATEOFCHANGETRESHOLD = 20;
 const bool DEBUG_RATE_OF_CHANGE = true;
 
 //determines whether or not to print debug data to the terminal.
-const bool printPotMapping = 0;
-const bool printPotVals    = 0;   //prints input data from each potenciometer
+const bool printPotMapping = 1;
+const bool printPotVals    = 1;   //prints input data from each potenciometer
 const bool printSerVals    = 1;   //prints output data to each servo
-const bool printSettings   = 0;   //prints current servo settings when booting up.
-
+const bool printSettings   = 1;   //prints current servo settings when booting up.
+const bool printSerTimes   = 1;
 //time delay used for most everything
-const unsigned int delayTime = 500;
+const unsigned int delayTime = 1000;
 
 // constant position
 const byte constPos = 50; //int between 0 and 100
@@ -79,12 +98,12 @@ const bool filterObsenity = true;
 
 /*array of the type servo data. Used to store all the profiles of each of the servos*/
 servoData handProfile[numServos] {
-  {1, "Pinky",          0,  3, 0, 900, 10, 90, 50, 50, 50 },
-  {1, "ring Finger",   1,  5, 0, 900, 10, 90, 50, 50, 50 },
-  {1, "middle Finger", 2,  6, 0, 900, 10, 90, 50, 50, 50 },
-  {1, "index",         4,  9, 0, 900, 10, 90, 50, 50, 50 },
-  {1, "thumb",         5, 10, 0, 900, 10, 90, 50, 50, 50 },
-  {0, "DISABLED",      3, 11, 0, 900, 10, 90, 50, 50, 50 }
+  {1, "Pinky",         0,  3, 0, 900, 100, 900, 50, 50, 50 },
+  {1, "ring Finger",   1,  5, 0, 900, 100, 900, 50, 50, 50 },
+  {1, "middle Finger", 2,  6, 0, 900, 100, 900, 50, 50, 50 },
+  {1, "index",         4,  9, 0, 900, 100, 900, 50, 50, 50 },
+  {1, "thumb",         5, 10, 0, 900, 100, 900, 50, 50, 50 },
+  {0, "DISABLED",      3, 11, 0, 900, 100, 900, 50, 50, 50 }
 };
 
 /*predefined positions*/
@@ -121,10 +140,10 @@ byte readPotVal(servoData &Sser) {
     if (printPotMapping) { //prints debug data if needed
       Serial.print("pM:" + String(potVal) + " ");
     }
-    if (potVal < Sser.minS) {//constraints values 
-      potVal = Sser.minS;
-    } else if (potVal > Sser.maxS) {
-      potVal = Sser.maxS;
+    if (potVal <  0) {//constraints values 
+      potVal = 0;
+    } else if (potVal > 100) {
+      potVal = 100;
     }
     if (printPotMapping) { //prints debug data if needed
       Serial.print("pC:" + String(potVal) + " ");
@@ -183,6 +202,9 @@ void writeServo( byte sPos, servoData S){
       Serial.print("S:" + String(sPos) + " ");
   }
   int dTime = map(sPos, 0, 100, S.minS, S.maxS )+1000;
+  if (printSerTimes) { //prints debug data if needed
+      Serial.print("S:" + String(dTime) + ", "+ String(S.serPin) + " ");
+  }
   digitalWrite(S.serPin,HIGH); 
   delayMicroseconds(dTime); // waits 1000-2000 uS while forming the PWM signal
   digitalWrite(S.serPin,LOW);
@@ -211,6 +233,7 @@ void setup() {
 
 void loop() {
   sPosition tPos;
+  delay(delayTime);
   switch (mode) {
     //AnalogSet
     case '1':
@@ -260,6 +283,9 @@ void loop() {
           break;
         }
       }
+      break;
+    case '8':
+      readPotVal(handProfile[0]);
       break;
     default:
       Serial.println("Wrong mode");
