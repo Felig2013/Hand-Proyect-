@@ -17,15 +17,16 @@ struct servoData {
   int minS;
   int maxS;
 };
+
 /*data about a potenciometer*/
-struct potData:
+struct potData {
   byte potPin;
   int minP;
   int maxP;
   byte potReading;
   byte prevReading;
   byte prevReading2;
-
+};
 /*Custom data structure, used to store a particular position for
   the hand.
   uses PERCENTAGES not Angles to define positions*/
@@ -92,12 +93,12 @@ const bool FILTEROBSENITY = true;
 const byte NUMSERVOS = 6;
 
 potData readerProfile[6] {
-  {0,  3, 0, 900, 50, 50, 50 },
-  {1,  5, 0, 900, 50, 50, 50 },
-  {2,  6, 0, 900, 50, 50, 50 },
-  {4,  9, 0, 900, 50, 50, 50 },
-  {5, 10, 0, 900, 50, 50, 50 },
-  {3, 11, 0, 900, 50, 50, 50 }
+  {0, 0, 900, 50, 50, 50 },
+  {1, 0, 900, 50, 50, 50 },
+  {2, 0, 900, 50, 50, 50 },
+  {4, 0, 900, 50, 50, 50 },
+  {5, 0, 900, 50, 50, 50 },
+  {3, 0, 900, 50, 50, 50 }
 };
 
 servoData handProfile[6] {
@@ -122,7 +123,7 @@ void servosAttach() {
 /*Attaches all the potenciometers to the pins they are connected to.*/
 void potsAttach() {
   for (int i = 0; i > NUMSERVOS; i++) {
-    pinMode(readerProfile[i].serPin, INPUT);
+    pinMode(readerProfile[i].potPin, INPUT);
   }
 }
 
@@ -130,7 +131,7 @@ void potsAttach() {
 byte readPotVal(potData &pData) {
     int potVal = analogRead(pData.potPin); //reads value from pot
     if (PRINTPOTVALS) { //prints debug data if needed
-      Serial.print(pData.fName+" p:" + String(potVal) + " ");
+      Serial.print(String(pData.potPin)+" p:" + String(potVal) + " ");
     }
     potVal = map(potVal, pData.minP, pData.maxP, 0, 100);//map pot value
     if (PRINTPOTMAPPING) { //prints debug data if needed
@@ -218,7 +219,7 @@ Serial.println();
 }
 
 void setup() {
-  if (printSerVals || printPotVals || printSettings) { //if things need to get
+  if (PRINTSERVALS || PRINTPOTVALS) { //if things need to get
     Serial.begin(9600);
     Serial.println("serial ready");
   }
@@ -228,17 +229,16 @@ void setup() {
 
 void loop() {
   sPosition tPos;
-  delay(delayTime);
-  switch (mode) {
+  delay(DELAYTIME);
+  switch (MODE) {
     //AnalogSet
     case '1':
       moveHand(readPotValPositions());
-
       break;
 
     //Sequential Move
     case '2':
-      sequentialMove(delayTime);
+      sequentialMove(DELAYTIME);
       break;
 
     // move by serial
@@ -248,8 +248,7 @@ void loop() {
 
     // move all to constPos
     case '4':
-    tPos = {constPos, constPos, 
-    constPos, constPos, constPos, constPos};
+      tPos = {CONSTPOS, CONSTPOS, CONSTPOS, CONSTPOS, CONSTPOS, CONSTPOS};
       moveHand(tPos);
       break;
 
@@ -260,18 +259,19 @@ void loop() {
 
     //
     case '6':
-      sequentialMove(delayTime);
+      sequentialMove(DELAYTIME);
       break;
+
     case '7':
       tPos = readPotValPositions();
-      if(filterObsenity){
+      if(FILTEROBSENITY){
         //obsenity check 
       }
       moveHand(tPos);
       while (true){
         readPotValPositions(); //also updates rate of change
         if(maxRateOfChange>RATEOFCHANGETRESHOLD){
-          mode = 1;
+          MODE = 1;
           if(DEBUG_RATE_OF_CHANGE){
             Serial.println("out of sleep; rChange = "+String(maxRateOfChange));
           }
@@ -279,8 +279,9 @@ void loop() {
         }
       }
       break;
+      
     case '8':
-      readPotVal(handProfile[0]);
+      readPotVal(readerProfile[0]);
       break;
     default:
       Serial.println("Wrong mode");
