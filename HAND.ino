@@ -59,7 +59,7 @@ struct sPosition {
     serial report servo 
   mode 9: 
     serial report servo 
-*/ char MODE = '8';
+*/ char MODE = '1';
 
 /*max rate of change registered over the last INACTIVESTATESBEFORESLEEP states.*/
 byte maxRateOfChange; 
@@ -74,7 +74,7 @@ const byte RATEOFCHANGETRESHOLD = 20;
 const bool DEBUG_RATE_OF_CHANGE = true;
 
 //determines whether or not to print debug data to the terminal.
-const bool PRINTPOTMAPPING = 1;
+const bool PRINTPOTVALPROCESSING = 0; //Prints the intermediate steps in readPotVal
 const bool PRINTPOTVALS    = 1;   //prints input data from each potenciometer
 const bool PRINTSERVALS    = 1;   //prints output data to each servo
 const bool PRINTSERTIMES   = 1;
@@ -134,7 +134,7 @@ byte readPotVal(potData &pData) {
       Serial.print(String(pData.potPin)+" p:" + String(potVal) + " ");
     }
     potVal = map(potVal, pData.minP, pData.maxP, 0, 100);//map pot value
-    if (PRINTPOTMAPPING) { //prints debug data if needed
+    if (PRINTPOTVALPROCESSING) { //prints debug data if needed
       Serial.print("pM:" + String(potVal) + " ");
     }
     if (potVal <  0) {//constraints values 
@@ -142,7 +142,7 @@ byte readPotVal(potData &pData) {
     } else if (potVal > 100) {
       potVal = 100;
     }
-    if (PRINTPOTMAPPING) { //prints debug data if needed
+    if (PRINTPOTVALPROCESSING) { //prints debug data if needed
       Serial.print("pC:" + String(potVal) + " ");
     }
     //calculates change over time since last measure. 
@@ -158,7 +158,7 @@ byte readPotVal(potData &pData) {
     pData.prevReading = pData.potReading;
     pData.potReading = (potVal + pData.prevReading + pData.prevReading2) / 3;
    
-    if (PRINTPOTMAPPING) { //prints debug data if needed
+    if (PRINTPOTVALPROCESSING) { //prints debug data if needed
       Serial.print("pO:" + String(pData.potReading) + " "+"p(" + String(pData.potReading) + " " + String(pData.prevReading)+ " " + String(pData.prevReading2) +") ");
     }
   
