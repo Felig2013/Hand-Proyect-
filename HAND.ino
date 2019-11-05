@@ -1,4 +1,4 @@
-/*Hand-Proyect code v3.2*/
+/*Hand-Proyect code v4.*/
 /*This file contains the code that is used in the hand that
   that is up for display in the showroom @ Marshall.*/ 
 
@@ -10,22 +10,21 @@
 // change constants to mayus to use standar notation. 
 
 
-/*Custom data structure to replace the default arduino servo
-  library with a more bare-metal, more efficient deployment
-  that is more light in with the EPROM and enhances longevity*/
+/*Custom data structures to replace the default arduino servo*/
 struct servoData {
-  bool enabled;
   String fName;
-  byte potPin;
   byte serPin;
-  int minP;
-  int maxP;
   int minS;
   int maxS;
+
+};
+struct potData:
+  byte potPin;
+  int minP;
+  int maxP;
   byte potReading;
   byte prevReading;
   byte prevReading2;
-};
 
 /*Custom data structure, used to store a particular position for
   the hand.
@@ -59,9 +58,7 @@ struct sPosition {
     serial report servo 
   mode 9: 
     serial report servo 
-  
-*/
-char mode = '8';
+*/ char mode = '8';
 
 /*max rate of change registered over the last INACTIVESTATESBEFORESLEEP states.*/
 byte maxRateOfChange; 
