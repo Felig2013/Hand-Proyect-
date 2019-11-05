@@ -79,7 +79,7 @@ const bool PRINTPOTVALS    = 1;   //prints input data from each potenciometer
 const bool PRINTSERVALS    = 1;   //prints output data to each servo
 const bool PRINTSERTIMES   = 1;
 //time delay used for most everything
-const unsigned int DELAYTIME = 1000;
+const unsigned int DELAYTIME = 300;
 
 // constant position
 const byte CONSTPOS = 50; //int between 0 and 100
@@ -219,7 +219,7 @@ Serial.println();
 }
 
 void setup() {
-  if (PRINTSERVALS || PRINTPOTVALS) { //if things need to get
+  if (true) { //if things need to get
     Serial.begin(9600);
     Serial.println("serial ready");
   }
