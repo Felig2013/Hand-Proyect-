@@ -1,4 +1,4 @@
-/*Hand-Proyect code v4.*/
+/*Hand-Proyect code v4.0*/
 /*This file contains the code that is used in the hand that
   that is up for display in the showroom @ Marshall.*/ 
 
@@ -10,14 +10,14 @@
 // change constants to mayus to use standar notation. 
 
 
-/*Custom data structures to replace the default arduino servo*/
+/*data about a servo*/
 struct servoData {
   String fName;
   byte serPin;
   int minS;
   int maxS;
-
 };
+/*data about a potenciometer*/
 struct potData:
   byte potPin;
   int minP;
@@ -58,7 +58,7 @@ struct sPosition {
     serial report servo 
   mode 9: 
     serial report servo 
-*/ char mode = '8';
+*/ char MODE = '8';
 
 /*max rate of change registered over the last INACTIVESTATESBEFORESLEEP states.*/
 byte maxRateOfChange; 
@@ -73,68 +73,67 @@ const byte RATEOFCHANGETRESHOLD = 20;
 const bool DEBUG_RATE_OF_CHANGE = true;
 
 //determines whether or not to print debug data to the terminal.
-const bool printPotMapping = 1;
-const bool printPotVals    = 1;   //prints input data from each potenciometer
-const bool printSerVals    = 1;   //prints output data to each servo
-const bool printSettings   = 1;   //prints current servo settings when booting up.
-const bool printSerTimes   = 1;
+const bool PRINTPOTMAPPING = 1;
+const bool PRINTPOTVALS    = 1;   //prints input data from each potenciometer
+const bool PRINTSERVALS    = 1;   //prints output data to each servo
+const bool PRINTSERTIMES   = 1;
 //time delay used for most everything
-const unsigned int delayTime = 1000;
+const unsigned int DELAYTIME = 1000;
 
 // constant position
-const byte constPos = 50; //int between 0 and 100
-
-// number of servos being used -> prbly 6 lol
-const byte numServos = 6; // positive int 0-6, number of servos
+const byte CONSTPOS = 50; //int between 0 and 100
 
 /*
   BETA FEATURE:
   determines whether to run obsenity filter */
-const bool filterObsenity = true;
+const bool FILTEROBSENITY = true;
 
+/*number of servos */
+const byte NUMSERVOS = 6;
 
-/*array of the type servo data. Used to store all the profiles of each of the servos*/
-servoData handProfile[numServos] {
-  {1, "Pinky",         0,  3, 0, 900, 100, 900, 50, 50, 50 },
-  {1, "ring Finger",   1,  5, 0, 900, 100, 900, 50, 50, 50 },
-  {1, "middle Finger", 2,  6, 0, 900, 100, 900, 50, 50, 50 },
-  {1, "index",         4,  9, 0, 900, 100, 900, 50, 50, 50 },
-  {1, "thumb",         5, 10, 0, 900, 100, 900, 50, 50, 50 },
-  {0, "DISABLED",      3, 11, 0, 900, 100, 900, 50, 50, 50 }
+potData readerProfile[6] {
+  {0,  3, 0, 900, 50, 50, 50 },
+  {1,  5, 0, 900, 50, 50, 50 },
+  {2,  6, 0, 900, 50, 50, 50 },
+  {4,  9, 0, 900, 50, 50, 50 },
+  {5, 10, 0, 900, 50, 50, 50 },
+  {3, 11, 0, 900, 50, 50, 50 }
+};
+
+servoData handProfile[6] {
+  {"Pinky",         3,  100, 900},
+  {"ring Finger",   5,  100, 900},
+  {"middle Finger", 6,  100, 900},
+  {"index",         9,  100, 900},
+  {"thumb",         10, 100, 900},
+  {"DISABLED",      11, 100, 900}
 };
 
 /*predefined positions*/
-sPosition numberOne {0, 0,  0, 90, 90};
-sPosition peace     {0, 0, 90, 90, 90};
+sPosition NUMBERONE {0, 0,  0, 90, 90};
+sPosition PEACE     {0, 0, 90, 90, 90};
 
-/*prints and formats data from parameter servoData*/
-void printServoData(servoData servoSetting) {
-  Serial.println("Attached "+servoSetting.fName
-  +" PRange: "+String(servoSetting.minP)+"-"+String(servoSetting.maxP)
-  +" SRange: "+String(servoSetting.minS)+"-"+String(servoSetting.maxS)
-  +" sPin: "+String(servoSetting.serPin)+" pPin: "+String(servoSetting.potPin) );
-}
-
-/*Attaches all the servos to the pins they are connected to and
-  prints debug data if flag is set*/
+/*Attaches all the servos to the pins they are connected*/
 void servosAttach() {
-  for (int i = 0; i > numServos; i++) {
+  for (int i = 0; i > NUMSERVOS; i++) {
     pinMode(handProfile[i].serPin, OUTPUT);
-    if (printSettings) {
-      printServoData(handProfile[i]);
-    }
+  }
+}
+/*Attaches all the potenciometers to the pins they are connected to.*/
+void potsAttach() {
+  for (int i = 0; i > NUMSERVOS; i++) {
+    pinMode(readerProfile[i].serPin, INPUT);
   }
 }
 
 /*Reads and averages reading for provided servoData profile*/ 
-byte readPotVal(servoData &Sser) {
-  if (Sser.enabled) {
-    int potVal = analogRead(Sser.potPin); //reads value from pot
-    if (printPotVals) { //prints debug data if needed
-      Serial.print(Sser.fName+" p:" + String(potVal) + " ");
+byte readPotVal(potData &pData) {
+    int potVal = analogRead(pData.potPin); //reads value from pot
+    if (PRINTPOTVALS) { //prints debug data if needed
+      Serial.print(pData.fName+" p:" + String(potVal) + " ");
     }
-    potVal = map(potVal, Sser.minP, Sser.maxP, 0, 100);//map pot value
-    if (printPotMapping) { //prints debug data if needed
+    potVal = map(potVal, pData.minP, pData.maxP, 0, 100);//map pot value
+    if (PRINTPOTMAPPING) { //prints debug data if needed
       Serial.print("pM:" + String(potVal) + " ");
     }
     if (potVal <  0) {//constraints values 
@@ -142,38 +141,38 @@ byte readPotVal(servoData &Sser) {
     } else if (potVal > 100) {
       potVal = 100;
     }
-    if (printPotMapping) { //prints debug data if needed
+    if (PRINTPOTMAPPING) { //prints debug data if needed
       Serial.print("pC:" + String(potVal) + " ");
     }
     //calculates change over time since last measure. 
-    byte cRateOfChange = abs(Sser.potReading-Sser.prevReading);
+    byte cRateOfChange = abs(pData.potReading-pData.prevReading);
     if(maxRateOfChange<cRateOfChange){
       maxRateOfChange = cRateOfChange;
       if(DEBUG_RATE_OF_CHANGE){
         Serial.println("max rChange = "+String(maxRateOfChange));
       }
-    } 
-    //shuffles arround averages in memory
-    Sser.prevReading2 = Sser.prevReading;
-    Sser.prevReading = Sser.potReading;
-    Sser.potReading = (potVal + Sser.prevReading + Sser.prevReading2) / 3;
-   
-    if (printPotMapping) { //prints debug data if needed
-      Serial.print("pO:" + String(Sser.potReading) + " "+"p(" + String(Sser.potReading) + " " + String(Sser.prevReading)+ " " + String(Sser.prevReading2) +") ");
     }
-  }
-  return Sser.potReading;
+    //shuffles arround averages in memory
+    pData.prevReading2 = pData.prevReading;
+    pData.prevReading = pData.potReading;
+    pData.potReading = (potVal + pData.prevReading + pData.prevReading2) / 3;
+   
+    if (PRINTPOTMAPPING) { //prints debug data if needed
+      Serial.print("pO:" + String(pData.potReading) + " "+"p(" + String(pData.potReading) + " " + String(pData.prevReading)+ " " + String(pData.prevReading2) +") ");
+    }
+  
+  return pData.potReading;
 }
 
 /*reads values from potentiomentes, and returns a position value*/
 sPosition readPotValPositions() {
   sPosition inputPosition{
-    readPotVal(handProfile[0]),
-    readPotVal(handProfile[1]),
-    readPotVal(handProfile[2]),
-    readPotVal(handProfile[3]),
-    readPotVal(handProfile[4]),
-    readPotVal(handProfile[5])
+    readPotVal(readerProfile[0]),
+    readPotVal(readerProfile[1]),
+    readPotVal(readerProfile[2]),
+    readPotVal(readerProfile[3]),
+    readPotVal(readerProfile[4]),
+    readPotVal(readerProfile[5])
   };
   Serial.println();
   return inputPosition;
@@ -195,12 +194,12 @@ void sequentialMove(int dTime) {
 
 /*sets a servo to the given position*/
 void writeServo( byte sPos, servoData S){
-  if (printSerVals) { //prints debug data if needed
+  if (PRINTSERVALS) { //prints debug data if needed
       Serial.print("S:" + String(sPos) + " ");
   }
   int dTime = map(sPos, 0, 100, S.minS, S.maxS )+1000;
-  if (printSerTimes) { //prints debug data if needed
-      Serial.print("S:" + String(dTime) + ", "+ String(S.serPin) + " ");
+  if (PRINTSERTIMES) { //prints debug data if needed
+      Serial.print("dT:" + String(dTime) + ", "+ String(S.serPin) + " ");
   }
   digitalWrite(S.serPin,HIGH); 
   delayMicroseconds(dTime); // waits 1000-2000 uS while forming the PWM signal
@@ -217,7 +216,6 @@ writeServo(fingerPos.thumbF,  handProfile[4]);
 writeServo(fingerPos.wrist,   handProfile[5]);
 Serial.println();
 }
-
 
 void setup() {
   if (printSerVals || printPotVals || printSettings) { //if things need to get
