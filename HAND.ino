@@ -83,6 +83,9 @@ const unsigned int DELAYTIME = 300;
 
 // constant position
 const byte CONSTPOS = 50; //int between 0 and 100
+//
+const byte REFRESHESPERCYCLE = 4;
+const byte DELAYBETWENREFRESHES = 100;
 
 /*
   BETA FEATURE:
@@ -233,6 +236,11 @@ void loop() {
   switch (MODE) {
     //AnalogSet
     case '1':
+    for (byte i = 0; i < REFRESHESPERCYCLE; i++)
+    {
+      delay(readPotValPositions());
+    }
+    
       moveHand(readPotValPositions());
       break;
 
