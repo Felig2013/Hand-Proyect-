@@ -236,11 +236,10 @@ void loop() {
   switch (MODE) {
     //AnalogSet
     case '1':
-    for (byte i = 0; i < REFRESHESPERCYCLE; i++)
-    {
-      delay(readPotValPositions());
-    }
-    
+      for (byte i = 0; i < REFRESHESPERCYCLE; i++){
+      delay(DELAYBETWENREFRESHES);
+      readPotValPositions();
+      }
       moveHand(readPotValPositions());
       break;
 
